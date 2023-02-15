@@ -1,0 +1,42 @@
+{
+  "name": "h.ts",
+  "version": "1.0.0",
+  "description": "Very simple DOM generator with types declaration",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "browser": "./dist/index.mjs"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run clear && vite build",
+    "clear": "rimraf dist lib"
+  },
+  "keywords": [
+    "create-element",
+    "dom",
+    "element",
+    "generator",
+    "html-generator",
+    "browser",
+    "typescript"
+  ],
+  "author": "Dragon-Fish <dragon-fish@qq.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^18.13.0",
+    "rimraf": "^4.1.2",
+    "typescript": "^4.9.5",
+    "vite": "^4.1.1",
+    "vite-plugin-dts": "^1.7.3"
+  }
+}
