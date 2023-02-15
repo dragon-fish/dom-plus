@@ -1,5 +1,5 @@
 {
-  "name": "h.ts",
+  "name": "create-element-ts",
   "version": "1.0.0",
   "description": "Very simple DOM generator with types declaration",
   "main": "dist/index.js",
