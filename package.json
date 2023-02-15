@@ -1,9 +1,10 @@
 {
   "name": "create-element-ts",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Very simple DOM generator with types declaration",
-  "main": "dist/index.js",
+  "main": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "type": "module",
   "files": [
     "dist",
     "lib"
@@ -38,5 +39,13 @@
     "typescript": "^4.9.5",
     "vite": "^4.1.1",
     "vite-plugin-dts": "^1.7.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dragon-fish/create-element-ts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dragon-fish/create-element-ts/issues"
+  },
+  "homepage": "https://github.com/dragon-fish/create-element-ts#readme"
 }

@@ -1,6 +1,6 @@
 # DOM Generator
 
-Very simple DOM generator with types declaration。
+Very simple DOM generator with types declaration.
 
 ## Installation
 
@@ -27,7 +27,7 @@ const { h } = require('create-element-ts')
 ### In browser
 
 ```html
-<script src="https://unpkg.org/create-element-ts/dist/index.umd.js"></script>
+<script src="https://unpkg.com/create-element-ts/dist/index.umd.js"></script>
 <script>
   const { h } = window.CreateElement
   // ...
@@ -37,7 +37,7 @@ const { h } = require('create-element-ts')
 Or... Why not ESM?
 
 ```ts
-import { h } from 'https://unpkg.org/create-element-ts?module'
+import { h } from 'https://unpkg.com/create-element-ts?module'
 // ...
 ```
 
