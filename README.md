@@ -12,7 +12,7 @@ Very simple DOM generator with types declaration.
 - [x] 😏 No more `document.createElement` and `element.appendChild`!
 - [x] 🤫 Even no `element.addEventListener`!
 - [x] 🤩 Modify existing Element instance!
-- [x] 😍 Fricking tiny size: 0 dependencies, 0 configuration, 0 problems! `dist/index.js  3.82 kB │ gzip: 1.39 kB │ map: 18.27 kB`
+- [x] 😍 Fricking tiny size: 0 dependencies, 0 configuration, 0 problems! `dist/index.js  2.46 kB │ gzip: 0.96 kB │ map: 13.62 kB`
 
 ## Installation
 

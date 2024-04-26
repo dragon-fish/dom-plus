@@ -1,6 +1,6 @@
-import { h } from '../src/index.js'
+import { h, q } from '../src/index.js'
 
-const APP_ROOT = document.getElementById('app')!
+const APP_ROOT = q<HTMLElement>('app')!
 
 // Build a simple DOM tree
 const main = h('main', [

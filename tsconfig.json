@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ES6",
+    "target": "ES2020",
+    "module": "CommonJS",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": [],
     "allowJs": false,
@@ -17,5 +17,5 @@
     "declaration": true
   },
   "include": ["src"],
-  "exclude": ["node_modules", "lib"]
+  "exclude": ["dist", "lib"]
 }

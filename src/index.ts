@@ -120,12 +120,10 @@ export function createElement<
 }
 
 // Query selector
-export const querySelector = document.querySelector.bind(document)
-export const querySelectorAll = document.querySelectorAll.bind(document)
+export const querySelector: Document['querySelector'] =
+  document.querySelector.bind(document)
+export const querySelectorAll: Document['querySelectorAll'] =
+  document.querySelectorAll.bind(document)
 
 // Alias
 export { createElement as h, querySelector as q, querySelectorAll as qq }
-
-// Utils
-export * from './modules/index.js'
-export * from './plugins'
