@@ -43,7 +43,7 @@ const { h } = require('dom-plus')
 ```html
 <script src="https://unpkg.com/dom-plus"></script>
 <script>
-  const { h } = window.CreateElement
+  const { h } = window.DOMPlus
   // ...
 </script>
 ```

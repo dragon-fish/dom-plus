@@ -8,7 +8,7 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: true,
     lib: {
-      name: 'CreateElement',
+      name: 'DOMPlus',
       entry: resolve(__dirname, './src/index.ts'),
       fileName: 'index',
       formats: ['cjs', 'es', 'umd'],
