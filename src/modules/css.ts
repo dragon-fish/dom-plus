@@ -23,21 +23,29 @@ export function computedStyleValue<T extends AnyElement>(
   el: T,
   prop: keyof Properties
 ): string {
-  return window.getComputedStyle(el).getPropertyValue(prop)
+  return window.getComputedStyle(el).getPropertyValue(kebabCase(prop))
 }
 export function setStyle<T extends AnyElement>(
   el: T,
   prop: keyof Properties,
   value: string
 ) {
-  el.style.setProperty(prop, value)
+  if (!el || !prop || !value) return el
+  if (!('style' in el)) return el
+
+  let priority = ''
+  if (typeof value === 'string' && value.endsWith('!important')) {
+    priority = 'important'
+    value = value.slice(0, -10).trim()
+  }
+
+  console.log('setStyle', prop, value, priority)
+  el.style.setProperty(kebabCase(prop), value, priority)
   return el
 }
 export function setStyles<T extends AnyElement>(el: T, styles: Properties) {
-  if (!el || !styles) return el
-  if (!('style' in el)) return el
   Object.entries(styles).forEach(([key, value]) => {
-    el.style.setProperty(key, value)
+    setStyle(el, key as keyof Properties, value as string)
   })
   return el
 }
@@ -57,10 +65,10 @@ export function handleCSS<T extends AnyElement>(
   prop: keyof Properties | Properties,
   value?: string
 ): T | string {
+  console.log('handleCSS', prop, value)
   if (typeof prop === 'string') {
     if (value) {
-      setStyle(el, prop, value)
-      return el
+      return setStyle(el, prop, value)
     }
     return computedStyleValue(el, prop)
   }

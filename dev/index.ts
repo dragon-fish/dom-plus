@@ -1,6 +1,6 @@
 import { h, q } from '../src/index.js'
 
-const APP_ROOT = q<HTMLElement>('app')!
+const APP_ROOT = q<HTMLElement>('#app')!
 
 // Build a simple DOM tree
 const main = h('main', [
@@ -50,7 +50,7 @@ main {
 const withStyles = h('p', { style: { color: 'red' } }, 'Mama, I am red!')
 const withClasses = h(
   'div',
-  { class: ['foo', 'bar', 'rainbow'] },
+  { class: ['foo', 'bar'] },
   h('span', { class: ['rainbow'] }, 'Mama, I become rainbow!')
 )
 main.append(h('h2', 'Pro'), withStyles, withClasses)
@@ -61,7 +61,8 @@ const withEvents = h(
   { onClick: () => alert('Hello, world!') },
   'Click me!'
 )
-const stop = withEvents.$on('click', (e) => {
+const stoppAble = h('button', 'Only once!')
+const stop = stoppAble.$on('click', (e) => {
   e.preventDefault()
   e.stopPropagation()
   alert('This alert will be shown only once!')
@@ -85,6 +86,7 @@ main.append(
   h('h2', 'Events'),
   h('div', { style: { display: 'flex', gap: '1rem' } }, [
     withEvents,
+    stoppAble,
     changeText,
   ])
 )
