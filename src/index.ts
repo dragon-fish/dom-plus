@@ -8,46 +8,49 @@ import type {
   FullElementTagNameMap,
   ElementChildren,
   ElementAttributes,
-} from './types/Element'
-import { setStyles } from './utils/css.js'
+} from './types/Element.js'
+import { type DOMPlus, createDOMPlus } from './DOMPlus.js'
 
 export function createElement<K extends keyof FullElementTagNameMap>(
   tagName: K,
   children?: ElementChildren
-): FullElementTagNameMap[K]
+): DOMPlus<FullElementTagNameMap[K]>
 export function createElement<K extends keyof FullElementTagNameMap>(
   tagName: K,
   attr?: ElementAttributes,
   children?: ElementChildren
-): FullElementTagNameMap[K]
-export function createElement<K extends HTMLElement>(
+): DOMPlus<FullElementTagNameMap[K]>
+export function createElement<K extends HTMLElement | SVGElement>(
   element: K,
   children?: ElementChildren
-): K
-export function createElement<K extends HTMLElement>(
+): DOMPlus<K>
+export function createElement<K extends HTMLElement | SVGElement>(
   element: K,
   attr?: ElementAttributes,
   children?: ElementChildren
-): K
+): DOMPlus<K>
 export function createElement<
-  K extends keyof FullElementTagNameMap | HTMLElement
+  K extends keyof FullElementTagNameMap | HTMLElement | SVGElement
 >(
   tagNameOrElement: K,
   attrOrChildren?: ElementChildren | ElementAttributes,
   children?: ElementChildren
-): K extends keyof FullElementTagNameMap ? FullElementTagNameMap[K] : K {
+) {
   // Create element
-  let el: HTMLElement
+  let initialElement: HTMLElement | SVGElement
   if (typeof tagNameOrElement === 'string') {
-    el = document.createElement(tagNameOrElement as string)
+    initialElement = document.createElement(tagNameOrElement as string)
   } else if (
     typeof tagNameOrElement === 'object' &&
-    tagNameOrElement instanceof HTMLElement
+    (tagNameOrElement instanceof Element ||
+      tagNameOrElement instanceof SVGElement)
   ) {
-    el = tagNameOrElement
+    initialElement = tagNameOrElement
   } else {
     throw new Error('Invalid tag name')
   }
+
+  const el = createDOMPlus(initialElement)
 
   // Check if the second argument is attributes or children
   if (typeof attrOrChildren === 'string' || attrOrChildren instanceof Element) {
@@ -70,23 +73,19 @@ export function createElement<
       // CSS styles
       if (key === 'style') {
         if (typeof value === 'string') {
-          el.style.cssText = value
+          el.style && (el.style.cssText = value)
         } else {
-          setStyles(el as HTMLElement, value)
+          el.$css(value)
         }
       }
       // class names
       else if (key === 'class') {
-        if (typeof value === 'string') {
-          el.classList.add(...value.split(' '))
-        } else if (Array.isArray(value)) {
-          el.classList.add(...value)
-        }
+        el.$addClass(value)
       }
       // event listeners
       else if (key.startsWith('on')) {
         const event = key.slice(2).toLowerCase()
-        el.addEventListener(event, value)
+        el.$on(event as any, value)
       }
       // default attributes
       else {
@@ -103,15 +102,14 @@ export function createElement<
     el.replaceChildren(...children)
   }
 
-  return el as K extends keyof FullElementTagNameMap
-    ? FullElementTagNameMap[K]
-    : K
+  return el as DOMPlus<
+    K extends keyof FullElementTagNameMap ? FullElementTagNameMap[K] : K
+  >
 }
 
 // Alias
 export { createElement as h }
 
 // Utils
-export * from './utils/css'
-export * from './utils/listener'
-export * from './utils/string'
+export * from './utils'
+export * from './plugins'

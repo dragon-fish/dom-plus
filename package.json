@@ -1,5 +1,5 @@
 {
-  "name": "dom-pro",
+  "name": "dom-plus",
   "version": "2.0.0",
   "description": "Very simple DOM generator with types declaration",
   "main": "dist/index.cjs",
@@ -37,10 +37,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dragon-fish/dom-pro.git"
+    "url": "git+https://github.com/dragon-fish/dom-plus.git"
   },
   "bugs": {
-    "url": "https://github.com/dragon-fish/dom-pro/issues"
+    "url": "https://github.com/dragon-fish/dom-plus/issues"
   },
-  "homepage": "https://github.com/dragon-fish/dom-pro#readme"
+  "homepage": "https://github.com/dragon-fish/dom-plus#readme"
 }

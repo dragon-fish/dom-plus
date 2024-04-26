@@ -20,26 +20,26 @@ Very simple DOM generator with types declaration.
 
 ```sh
 # Via npm
-npm install dom-pro
+npm install dom-plus
 # Or pnpm
-pnpm add dom-pro
+pnpm add dom-plus
 # Yarn? sure
-yarn add dom-pro
+yarn add dom-plus
 ```
 
 Then import it to your project.
 
 ```ts
 // ESM
-import { h } from 'dom-pro'
+import { h } from 'dom-plus'
 // CJS
-const { h } = require('dom-pro')
+const { h } = require('dom-plus')
 ```
 
 ### In browser
 
 ```html
-<script src="https://unpkg.com/dom-pro"></script>
+<script src="https://unpkg.com/dom-plus"></script>
 <script>
   const { h } = window.CreateElement
   // ...
@@ -49,7 +49,7 @@ const { h } = require('dom-pro')
 Or... Why not ESM?
 
 ```ts
-import { h } from 'https://unpkg.com/dom-pro?module'
+import { h } from 'https://unpkg.com/dom-plus?module'
 // ...
 ```
 

@@ -35,13 +35,24 @@ main {
   max-width: 1200px;
   width: calc(100vw - 2rem);
 }
+
+/** 渐变文字 */
+.rainbow {
+  background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 `
   )
 )
 
 // Let's try something pro
-const withStyles = h('div', { style: { color: 'red' } }, 'Mama, I am red!')
-const withClasses = h('div', { class: ['foo', 'bar'] }, 'Mama, I have classes!')
+const withStyles = h('p', { style: { color: 'red' } }, 'Mama, I am red!')
+const withClasses = h(
+  'div',
+  { class: ['foo', 'bar', 'rainbow'] },
+  h('span', { class: ['rainbow'] }, 'Mama, I become rainbow!')
+)
 main.append(h('h2', 'Pro'), withStyles, withClasses)
 
 // and listen to some events
@@ -50,7 +61,6 @@ const withEvents = h(
   { onClick: () => alert('Hello, world!') },
   'Click me!'
 )
-main.append(h('h2', 'Events'), h('p', withEvents))
 
 // Pass HTMLElement instance as first parameter
 const textList = ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry']
@@ -65,4 +75,47 @@ h(changeText, {
     changeText.textContent = textList[++textIndex % textList.length]
   },
 })
-main.append(h('p', changeText))
+main.append(
+  h('h2', 'Events'),
+  h('div', { style: { display: 'flex', gap: '1rem' } }, [
+    withEvents,
+    changeText,
+  ])
+)
+
+// Plugins
+const pluginsTarget = h('p', 'Lorem ipsum dolor sit amet')
+const colorList = ['red', 'green', 'blue', 'yellow', 'purple']
+let colorIndex = -1
+const setCss = h(
+  'button',
+  {
+    onClick() {
+      pluginsTarget.$css('color', colorList[++colorIndex % colorList.length])
+    },
+  },
+  'Set CSS'
+)
+const getCss = h(
+  'button',
+  {
+    onClick() {
+      alert(pluginsTarget.$css('color'))
+    },
+  },
+  'Get CSS'
+)
+main.append(
+  h('h2', 'Plugins'),
+  pluginsTarget,
+  h(
+    'div',
+    {
+      style: {
+        display: 'flex',
+        gap: '1rem',
+      },
+    },
+    [setCss, getCss]
+  )
+)
