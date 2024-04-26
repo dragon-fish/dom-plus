@@ -14,7 +14,8 @@
   "scripts": {
     "dev": "vite",
     "build": "npm run clear && vite build && tsc",
-    "clear": "rimraf dist lib"
+    "clear": "rimraf dist lib",
+    "prepublish": "npm run build"
   },
   "keywords": [
     "create-element",
