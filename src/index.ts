@@ -4,48 +4,114 @@
  * @license MIT
  */
 
-export function createElement<K extends keyof ElementTagNameMap>(
+import type {
+  FullElementTagNameMap,
+  ElementChildren,
+  ElementAttributes,
+} from './types/Element'
+import { setStyles } from './utils/css.js'
+
+export function createElement<K extends keyof FullElementTagNameMap>(
   tagName: K,
   children?: ElementChildren
-): ElementTagNameMap[K]
-export function createElement<K extends keyof ElementTagNameMap>(
+): FullElementTagNameMap[K]
+export function createElement<K extends keyof FullElementTagNameMap>(
   tagName: K,
   attr?: ElementAttributes,
   children?: ElementChildren
-): ElementTagNameMap[K]
-export function createElement<K extends keyof ElementTagNameMap>(
-  tagName: K,
+): FullElementTagNameMap[K]
+export function createElement<K extends HTMLElement>(
+  element: K,
+  children?: ElementChildren
+): K
+export function createElement<K extends HTMLElement>(
+  element: K,
+  attr?: ElementAttributes,
+  children?: ElementChildren
+): K
+export function createElement<
+  K extends keyof FullElementTagNameMap | HTMLElement
+>(
+  tagNameOrElement: K,
   attrOrChildren?: ElementChildren | ElementAttributes,
   children?: ElementChildren
-): ElementTagNameMap[K] {
-  const el = document.createElement(tagName) as ElementTagNameMap[K]
+): K extends keyof FullElementTagNameMap ? FullElementTagNameMap[K] : K {
+  // Create element
+  let el: HTMLElement
+  if (typeof tagNameOrElement === 'string') {
+    el = document.createElement(tagNameOrElement as string)
+  } else if (
+    typeof tagNameOrElement === 'object' &&
+    tagNameOrElement instanceof HTMLElement
+  ) {
+    el = tagNameOrElement
+  } else {
+    throw new Error('Invalid tag name')
+  }
 
-  if (attrOrChildren instanceof Element || typeof attrOrChildren === 'string') {
+  // Check if the second argument is attributes or children
+  if (typeof attrOrChildren === 'string' || attrOrChildren instanceof Element) {
     attrOrChildren = [attrOrChildren]
   }
+
+  // Second argument is children
   if (Array.isArray(attrOrChildren)) {
-    el.append(...attrOrChildren)
-  } else if (attrOrChildren) {
+    el.replaceChildren(...attrOrChildren)
+  }
+  // Second argument is attributes or properties
+  else if (typeof attrOrChildren === 'object' && attrOrChildren !== null) {
     const attrs = attrOrChildren
-    Object.keys(attrs).forEach((k) => {
-      typeof k !== 'undefined' && el.setAttribute(k, '' + attrs[k])
+    Object.entries(attrs).forEach(([key, value]) => {
+      if (typeof value === 'undefined') {
+        el.removeAttribute(key)
+        return
+      }
+
+      // CSS styles
+      if (key === 'style') {
+        if (typeof value === 'string') {
+          el.style.cssText = value
+        } else {
+          setStyles(el as HTMLElement, value)
+        }
+      }
+      // class names
+      else if (key === 'class') {
+        if (typeof value === 'string') {
+          el.classList.add(...value.split(' '))
+        } else if (Array.isArray(value)) {
+          el.classList.add(...value)
+        }
+      }
+      // event listeners
+      else if (key.startsWith('on')) {
+        const event = key.slice(2).toLowerCase()
+        el.addEventListener(event, value)
+      }
+      // default attributes
+      else {
+        el.setAttribute(key, value)
+      }
     })
   }
 
-  if (children instanceof Element || typeof children === 'string') {
+  // Check if the third argument is children
+  if (typeof children === 'string' || children instanceof Element) {
     children = [children]
   }
   if (Array.isArray(children)) {
-    el.append(...children)
+    el.replaceChildren(...children)
   }
-  return el
+
+  return el as K extends keyof FullElementTagNameMap
+    ? FullElementTagNameMap[K]
+    : K
 }
 
-type ElementTagNameMap = HTMLElementTagNameMap &
-  Pick<
-    SVGElementTagNameMap,
-    Exclude<keyof SVGElementTagNameMap, keyof HTMLElementTagNameMap>
-  >
-type ElementChildren = string | Element | (Element | string)[]
-type ElementAttributes = Record<string, string | boolean | number | undefined>
+// Alias
 export { createElement as h }
+
+// Utils
+export * from './utils/css'
+export * from './utils/listener'
+export * from './utils/string'

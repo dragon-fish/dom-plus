@@ -1,22 +1,16 @@
 {
-  "name": "create-element-ts",
-  "version": "1.0.2",
+  "name": "dom-pro",
+  "version": "2.0.0",
   "description": "Very simple DOM generator with types declaration",
-  "main": "dist/index.js",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "browser": "dist/index.umd.cjs",
   "types": "dist/index.d.ts",
   "type": "module",
   "files": [
     "dist",
     "lib"
   ],
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "browser": "./dist/index.js"
-    }
-  },
   "scripts": {
     "dev": "vite",
     "build": "npm run clear && vite build",
@@ -34,18 +28,19 @@
   "author": "Dragon-Fish <dragon-fish@qq.com>",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^18.13.0",
-    "rimraf": "^4.1.2",
-    "typescript": "^4.9.5",
-    "vite": "^4.1.1",
-    "vite-plugin-dts": "^1.7.3"
+    "@types/node": "^20.12.7",
+    "csstype": "^3.1.3",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.10",
+    "vite-plugin-dts": "^3.9.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dragon-fish/create-element-ts.git"
+    "url": "git+https://github.com/dragon-fish/dom-pro.git"
   },
   "bugs": {
-    "url": "https://github.com/dragon-fish/create-element-ts/issues"
+    "url": "https://github.com/dragon-fish/dom-pro/issues"
   },
-  "homepage": "https://github.com/dragon-fish/create-element-ts#readme"
+  "homepage": "https://github.com/dragon-fish/dom-pro#readme"
 }

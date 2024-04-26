@@ -1,6 +1,9 @@
 import { h } from '../src/index'
 
-const app = h('main', [
+const APP_ROOT = document.getElementById('app')!
+
+// Build a simple DOM tree
+const main = h('main', [
   h('h1', 'DOM Generator'),
   h('article', [
     h('h2', 'hello, world'),
@@ -10,7 +13,9 @@ const app = h('main', [
     ),
   ]),
 ])
+APP_ROOT.appendChild(main)
 
+// Add some styles
 document.head.appendChild(
   h(
     'style',
@@ -34,9 +39,30 @@ main {
   )
 )
 
-document.getElementById('app')?.appendChild(app)
+// Let's try something pro
+const withStyles = h('div', { style: { color: 'red' } }, 'Mama, I am red!')
+const withClasses = h('div', { class: ['foo', 'bar'] }, 'Mama, I have classes!')
+main.append(h('h2', 'Pro'), withStyles, withClasses)
 
-// step-1  - create element
-const block = h('div', { class: 'foo' }, [h('span', 'bar'), 'baz'])
-// step-2? - no more steps!
-console.info(block.outerHTML)
+// and listen to some events
+const withEvents = h(
+  'button',
+  { onClick: () => alert('Hello, world!') },
+  'Click me!'
+)
+main.append(h('h2', 'Events'), h('p', withEvents))
+
+// Pass HTMLElement instance as first parameter
+const textList = ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry']
+let textIndex = -1
+const changeText = h('button')
+// Let's try some magic
+// We can replace the children of the element by passing some thing to it
+h(changeText, 'Just click me!')
+// We can also add properties to the element
+h(changeText, {
+  onClick() {
+    changeText.textContent = textList[++textIndex % textList.length]
+  },
+})
+main.append(h('p', changeText))
