@@ -1,8 +1,10 @@
 import { Properties } from 'csstype'
-import { setStyles, computedStyleValue } from '../utils/css.js'
-import { removableListener } from '../utils/listener.js'
+import { handleCSS, removableListener } from '../modules/index.js'
+import type { AnyElement } from '../types/Element.js'
 
 /**
+ * WIP: This is a work in progress. Please do not use it yet.
+ *
  * Install all global shortcuts
  * - `element.$css`: Shortcut for setting and getting CSS properties
  * - `element.$on`: Shortcut for adding event listeners
@@ -22,20 +24,9 @@ declare global {
   }
 }
 export function applyCSSShortcut() {
-  HTMLElement.prototype.$css = function <T extends HTMLElement>(
-    this: T,
-    prop: keyof Properties | Properties,
-    value?: string
-  ): string | T {
-    if (typeof prop === 'string') {
-      if (value) {
-        this.style.setProperty(prop, value)
-        return this
-      }
-      return computedStyleValue(this, prop)
-    }
-    setStyles(this, prop)
-    return this
+  // @ts-ignore
+  HTMLElement.prototype.$css = function (prop, value) {
+    return handleCSS.bind(null)(this, prop, value)
   }
 }
 
@@ -44,23 +35,34 @@ declare global {
     /**
      * Add event listener and return a function to remove it
      */
-    $on<K extends keyof ElementEventMap>(
-      type: K,
-      listener: (this: Element, ev: ElementEventMap[K]) => any,
+    $on<T extends AnyElement>(
+      this: T,
+      type: string,
+      listener: (this: T, ev: Event) => any,
+      options?: boolean | AddEventListenerOptions
+    ): () => void
+    $on<
+      T extends AnyElement,
+      K extends T extends HTMLElement
+        ? keyof HTMLElementEventMap
+        : keyof SVGElementEventMap
+    >(
+      type: K | string,
+      listener: (
+        this: T,
+        ev: K extends string
+          ? Event
+          : T extends HTMLElement
+          ? HTMLElementEventMap[K]
+          : SVGElementEventMap[K]
+      ) => any,
       options?: boolean | AddEventListenerOptions
     ): () => void
   }
 }
 export function applyListenerShortcut() {
-  Element.prototype.$on = function <
-    T extends Element,
-    K extends keyof ElementEventMap
-  >(
-    this: T,
-    type: K,
-    listener: (this: Element, ev: ElementEventMap[K]) => any,
-    options?: boolean | AddEventListenerOptions
-  ) {
-    return removableListener(this, type, listener, options)
+  // @ts-ignore
+  Element.prototype.$on = function (type, listener, options) {
+    return removableListener.bind(null)(this, type, listener, options)
   }
 }

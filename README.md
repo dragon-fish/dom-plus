@@ -12,7 +12,7 @@ Very simple DOM generator with types declaration.
 - [x] 😏 No more `document.createElement` and `element.appendChild`!
 - [x] 🤫 Even no `element.addEventListener`!
 - [x] 🤩 Modify existing Element instance!
-- [x] 😍 Fricking tiny size: 0 dependencies, 0 configuration, 0 problems! `dist/index.js  2.34 kB │ gzip: 0.93 kB │ map: 8.74 kB`
+- [x] 😍 Fricking tiny size: 0 dependencies, 0 configuration, 0 problems! `dist/index.js  3.82 kB │ gzip: 1.39 kB │ map: 18.27 kB`
 
 ## Installation
 
@@ -73,6 +73,10 @@ Why not use CSS styles as an object?
 
 ```ts
 const redBlock = h('div', { style: { color: 'red' } }, 'Hey, I am red!')
+  .$css({
+    backgroundColor: 'black',
+  })
+  .$css('font-size', '2em')
 ```
 
 It's working! Even with the types!
@@ -81,6 +85,8 @@ It's working! Even with the types!
 
 ```ts
 const block = h('div', { class: ['foo', 'bar'] }, 'Hey, I have classes!')
+  .$addClass('baz')
+  .$removeClass('foo')
 ```
 
 Needless to say, it's working too!!
@@ -97,6 +103,12 @@ const button = h(
   },
   'Click me!'
 )
+const stop = button.$on('click', (e) => {
+  e.preventDefault()
+  e.stopPropagation()
+  alert('This alert will be shown only once!')
+  stop()
+})
 ```
 
 **IT JUST WORKS!!!**
@@ -112,7 +124,8 @@ const block = h(
   { class: 'foo' },
   'Hey, I am a block!'
 )
-// To: <div id="some-element" class="foo">Hey, I am a block!</div>
+block.$css('color', 'red').$addClass('bar')
+// To: <div id="some-element" class="foo bar" style="color: red;">Hey, I am a block!</div>
 ```
 
 Why are you still reading this?!! **Just try it!!!!!**

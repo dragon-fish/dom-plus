@@ -1,17 +1,19 @@
 import { Properties } from 'csstype'
 import {
-  computedStyleValue,
+  addClass,
+  handleCSS,
   removableListener,
-  setStyles,
-} from './utils/index.js'
+  removeClass,
+  toggleClass,
+} from './modules/index.js'
+import type { AnyElement } from './types/Element.js'
 
 /**
  * DOMPlus is a collection of useful methods for DOM elements
  *
  * - **WARNING**: This is an abstract type and should not be used directly. Please do not try to instantiate it. Use `createDOMPlus` instead.
  */
-export interface DOMPlus<T extends HTMLElement | SVGElement>
-  extends HTMLElement {
+export interface DOMPlus<T extends AnyElement> extends HTMLElement {
   /**
    * Add class names to the element
    */
@@ -23,7 +25,7 @@ export interface DOMPlus<T extends HTMLElement | SVGElement>
   /**
    * Toggle class names on the element
    */
-  $toggleClass(classNames: string | string[], force?: boolean): DOMPlus<T>
+  $toggleClass(classNames: string, force?: boolean): DOMPlus<T>
 
   /**
    * Get computed style value or set CSS properties
@@ -35,86 +37,63 @@ export interface DOMPlus<T extends HTMLElement | SVGElement>
   /**
    * Add event listener and return a function to remove it
    */
-  $on<K extends keyof ElementEventMap>(
-    type: K,
-    listener: (this: Element, ev: ElementEventMap[K]) => any,
+  $on<T extends AnyElement>(
+    this: T,
+    type: string,
+    listener: (this: T, ev: Event) => any,
     options?: boolean | AddEventListenerOptions
   ): () => void
+  $on<
+    T extends AnyElement,
+    K extends T extends HTMLElement
+      ? keyof HTMLElementEventMap
+      : keyof SVGElementEventMap
+  >(
+    type: K | string,
+    listener: (
+      this: T,
+      ev: K extends string
+        ? Event
+        : T extends HTMLElement
+        ? HTMLElementEventMap[K]
+        : SVGElementEventMap[K]
+    ) => any,
+    options?: boolean | AddEventListenerOptions
+  ): () => void
+
+  /**
+   * Set text content of the element
+   */
+  $text(): string
+  $text(text: string): this
 }
 
 /**
  * Create a DOMPlus instance from a DOM element
  */
-export function createDOMPlus<T extends HTMLElement | SVGElement>(
-  el: T
-): DOMPlus<T> {
-  // @ts-ignore
+export function createDOMPlus<T extends AnyElement>(el: T): DOMPlus<T> {
   const element = el as DOMPlus<T>
 
-  element.$addClass = function (
-    classNames: string | string[],
-    ...rest: string[]
-  ) {
-    const list = parseClassNames(classNames, ...rest)
-    this.classList.add(...list)
-    return this
-  }
+  // @ts-ignore FIXME: Type definition is incorrect, too bad!
+  element.$addClass = addClass.bind(null, element)
+  // @ts-ignore FIXME: Type definition is incorrect, too bad!
+  element.$removeClass = removeClass.bind(null, element)
+  // @ts-ignore FIXME: Type definition is incorrect, too bad!
+  element.$toggleClass = toggleClass.bind(null, element)
 
-  element.$removeClass = function (
-    classNames: string | string[],
-    ...rest: string[]
-  ) {
-    const list = parseClassNames(classNames, ...rest)
-    this.classList.remove(...list)
-    return this
-  }
+  // @ts-ignore FIXME: Type definition is incorrect, too bad!
+  element.$css = handleCSS.bind(null, element)
 
-  element.$toggleClass = function (
-    classNames: string | string[],
-    force?: boolean
-  ) {
-    const list = parseClassNames(classNames)
-    list.forEach((c) => this.classList.toggle(c, force))
-    return this
-  }
+  element.$on = removableListener.bind(null, element)
 
-  element.$css = function <T extends HTMLElement>(
-    this: T,
-    prop: keyof Properties | Properties,
-    value?: string
-  ): string | T {
-    if (typeof prop === 'string') {
-      if (value) {
-        this.style.setProperty(prop, value)
-        return this
-      }
-      return computedStyleValue(this, prop)
+  // @ts-ignore FIXME: Type definition is incorrect, too bad!
+  element.$text = function (text?: string) {
+    if (typeof text === 'undefined') {
+      return this.textContent || ''
     }
-    setStyles(this, prop)
+    this.textContent = text
     return this
-  }
-
-  element.$on = function <T extends Element, K extends keyof ElementEventMap>(
-    this: T,
-    type: K,
-    listener: (this: Element, ev: ElementEventMap[K]) => any,
-    options?: boolean | AddEventListenerOptions
-  ) {
-    return removableListener(this, type, listener, options)
   }
 
   return element
-}
-
-function parseClassNames(
-  classNames: string | string[],
-  ...rest: string[]
-): string[] {
-  if (typeof classNames === 'string') {
-    return classNames
-      .split(' ')
-      .map((c) => c.trim())
-      .filter(Boolean)
-  }
-  return [...classNames, ...rest]
 }

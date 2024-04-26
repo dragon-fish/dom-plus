@@ -11,3 +11,4 @@ export type ElementAttributes = {
   class?: string | string[]
   [key: string]: any
 }
+export type AnyElement = HTMLElement | SVGElement

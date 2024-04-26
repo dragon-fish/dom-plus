@@ -5,12 +5,14 @@
  */
 
 import type {
+  AnyElement,
   FullElementTagNameMap,
   ElementChildren,
   ElementAttributes,
 } from './types/Element.js'
 import { type DOMPlus, createDOMPlus } from './DOMPlus.js'
 
+// create element by tag name
 export function createElement<K extends keyof FullElementTagNameMap>(
   tagName: K,
   children?: ElementChildren
@@ -20,37 +22,47 @@ export function createElement<K extends keyof FullElementTagNameMap>(
   attr?: ElementAttributes,
   children?: ElementChildren
 ): DOMPlus<FullElementTagNameMap[K]>
-export function createElement<K extends HTMLElement | SVGElement>(
+// using given element
+export function createElement<K extends AnyElement>(
   element: K,
   children?: ElementChildren
 ): DOMPlus<K>
-export function createElement<K extends HTMLElement | SVGElement>(
+export function createElement<K extends AnyElement>(
   element: K,
   attr?: ElementAttributes,
   children?: ElementChildren
 ): DOMPlus<K>
+
+/**
+ * Create a DOMPlus element, with attributes and children
+ * with the given tag name or element
+ */
 export function createElement<
-  K extends keyof FullElementTagNameMap | HTMLElement | SVGElement
+  K extends keyof FullElementTagNameMap | AnyElement
 >(
-  tagNameOrElement: K,
+  initialTarget: K,
   attrOrChildren?: ElementChildren | ElementAttributes,
   children?: ElementChildren
 ) {
   // Create element
-  let initialElement: HTMLElement | SVGElement
-  if (typeof tagNameOrElement === 'string') {
-    initialElement = document.createElement(tagNameOrElement as string)
+  let rawElement: AnyElement | null = null
+  if (typeof initialTarget === 'string') {
+    rawElement = document.createElement(initialTarget as string)
   } else if (
-    typeof tagNameOrElement === 'object' &&
-    (tagNameOrElement instanceof Element ||
-      tagNameOrElement instanceof SVGElement)
+    typeof initialTarget === 'object' &&
+    (initialTarget instanceof Element || initialTarget instanceof SVGElement)
   ) {
-    initialElement = tagNameOrElement
+    rawElement = initialTarget
   } else {
-    throw new Error('Invalid tag name')
+    throw new TypeError(
+      'Invalid first argument: must be a string or an instance of Element'
+    )
   }
 
-  const el = createDOMPlus(initialElement)
+  if (!rawElement) {
+    return null
+  }
+  const el = createDOMPlus(rawElement)
 
   // Check if the second argument is attributes or children
   if (typeof attrOrChildren === 'string' || attrOrChildren instanceof Element) {
@@ -107,9 +119,13 @@ export function createElement<
   >
 }
 
+// Query selector
+export const querySelector = document.querySelector.bind(document)
+export const querySelectorAll = document.querySelectorAll.bind(document)
+
 // Alias
-export { createElement as h }
+export { createElement as h, querySelector as q, querySelectorAll as qq }
 
 // Utils
-export * from './utils'
+export * from './modules/index.js'
 export * from './plugins'

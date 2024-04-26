@@ -1,4 +1,4 @@
-import { h } from '../src/index'
+import { h } from '../src/index.js'
 
 const APP_ROOT = document.getElementById('app')!
 
@@ -61,6 +61,12 @@ const withEvents = h(
   { onClick: () => alert('Hello, world!') },
   'Click me!'
 )
+const stop = withEvents.$on('click', (e) => {
+  e.preventDefault()
+  e.stopPropagation()
+  alert('This alert will be shown only once!')
+  stop()
+})
 
 // Pass HTMLElement instance as first parameter
 const textList = ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry']
@@ -86,12 +92,14 @@ main.append(
 // Plugins
 const pluginsTarget = h('p', 'Lorem ipsum dolor sit amet')
 const colorList = ['red', 'green', 'blue', 'yellow', 'purple']
-let colorIndex = -1
+let colorIndex = 0
 const setCss = h(
   'button',
   {
     onClick() {
-      pluginsTarget.$css('color', colorList[++colorIndex % colorList.length])
+      pluginsTarget
+        .$css('color', colorList[colorIndex % colorList.length])
+        .$css('backgroundColor', colorList[++colorIndex % colorList.length])
     },
   },
   'Set CSS'
@@ -100,7 +108,11 @@ const getCss = h(
   'button',
   {
     onClick() {
-      alert(pluginsTarget.$css('color'))
+      alert(
+        `Color: ${pluginsTarget.$css(
+          'color'
+        )}\nBackground: ${pluginsTarget.$css('backgroundColor')}`
+      )
     },
   },
   'Get CSS'
@@ -119,3 +131,30 @@ main.append(
     [setCss, getCss]
   )
 )
+
+// Chainable
+const chainableTarget = h(
+  'p',
+  {
+    class: 'foo bar',
+    style: {
+      color: 'red',
+    },
+  },
+  'Hello, world!'
+)
+const chainable = h(
+  'button',
+  {
+    onClick() {
+      chainableTarget
+        .$addClass('baz')
+        .$toggleClass('foo')
+        .$css('color', 'blue')
+        .$css({ fontSize: '2rem' })
+        .$text('Hey, I changed!')
+    },
+  },
+  'Chainable'
+)
+main.append(h('h2', 'Chainable'), chainableTarget, chainable)
