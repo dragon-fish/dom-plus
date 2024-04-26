@@ -1,5 +1,7 @@
 <div align="center">
 
+![dom-plus](https://socialify.git.ci/dragon-fish/dom-plus/image?description=1&font=Inter&forks=1&issues=1&language=1&name=1&pulls=1&stargazers=1&theme=Auto)
+
 # PRO DOM Generator
 
 Very simple DOM generator with types declaration.
