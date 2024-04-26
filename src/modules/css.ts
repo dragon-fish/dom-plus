@@ -39,7 +39,6 @@ export function setStyle<T extends AnyElement>(
     value = value.slice(0, -10).trim()
   }
 
-  console.log('setStyle', prop, value, priority)
   el.style.setProperty(kebabCase(prop), value, priority)
   return el
 }
@@ -65,7 +64,6 @@ export function handleCSS<T extends AnyElement>(
   prop: keyof Properties | Properties,
   value?: string
 ): T | string {
-  console.log('handleCSS', prop, value)
   if (typeof prop === 'string') {
     if (value) {
       return setStyle(el, prop, value)
